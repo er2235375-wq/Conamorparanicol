@@ -94,6 +94,36 @@
             align-items: center;
             justify-content: center;
         }
+        /* Estilos del reproductor de música */
+        .music-player {
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 182, 193, 0.2);
+            padding-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .music-btn {
+            background: linear-gradient(135deg, #d8b4fe, #f472b6);
+            border: none;
+            color: #0b091a;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(244, 114, 182, 0.4);
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .music-btn:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+        .song-info {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
     </style>
 </head>
 <body>
@@ -108,10 +138,23 @@
         </div>
 
         <div class="quote-text" id="frase-hoy">Cargando frase...</div>
+
+        <!-- Reproductor de música -->
+        <div class="music-player">
+            <div class="song-info" id="info-cancion">Reproduciendo: Canción 1 🎵</div>
+            <button class="music-btn" id="btn-reproducir" onclick="toggleMusica()">▶ Reproducir Música</button>
+            <button class="music-btn" style="background: rgba(255,255,255,0.1); color: #fff; font-size: 0.8rem; padding: 6px 15px;" onclick="cambiarCancion()">Cambiar Canción 🎶</button>
+        </div>
     </div>
 
+    <!-- Elemento de audio con las dos canciones -->
+    <audio id="audio-player" loop>
+        <source id="source-audio" src="cancion1.mp3" type="audio/mp3">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
     <script>
-        // 100 frases únicas y distintas, todas terminando con "con amor s.w"
+        // 100 frases únicas y distintas con la firma
         const frases = [
             "Eres la casualidad más bonita de mi vida, con amor s.w",
             "Cada día a tu lado es un regalo maravilloso, con amor s.w",
@@ -196,7 +239,7 @@
             "Me haces creer en los finales felices, con amor s.w",
             "Tu compañía es lo único que necesito para estar bien, con amor s.w",
             "Eres la flor que adorna mi alma todos los días, con amor s.w",
-            "Contigo el futuro se ve brillante y lleno de ilusión, con amor s.w",
+            "Contigo el futuro se ve brillante y lleno de ilusión, with love s.w",
             "Eres la persona más noble y hermosa que conozco, con amor s.w",
             "Tu amor me hace volar sin moverme del sitio, con amor s.w",
             "Me das mil razones para sonreír cada mañana, con amor s.w",
@@ -215,7 +258,7 @@
             "Eres la persona que le da color a mi mundo entero, con amor s.w"
         ];
 
-        // 100 tipos de flores distintas (iconos y emojis de flores/plantas variadas)
+        // 100 tipos de flores distintas
         const flores = [
             "🌸", "🌷", "🌹", "🌻", "🌺", "💐", "🌼", "💮", "🪷", "🥀",
             "🌿", "🌱", "🪴", "🍀", "🍁", "🍂", "🍃", "🍄", "🌾", "🌵",
@@ -229,15 +272,7 @@
             "🌸", "🌷", "🌹", "🌻", "🌺", "💐", "🌼", "💮", "🪷", "🌻"
         ];
 
-        // Obtener fecha exacta (día de la semana, día del mes, mes y año) en español
-        function obtenerFechaEspanol() {
-            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const fechaActual = new Date();
-            let fechaFormateada = fechaActual.toLocaleDateString('es-ES', opciones);
-            return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
-        }
-
-        // Sincronizar frase y flor con el día correspondiente del año
+        // Sincronizar fecha, frase y flor diaria
         function actualizarContenidoDiario() {
             const hoy = new Date();
             const inicioAnio = new Date(hoy.getFullYear(), 0, 0);
@@ -246,12 +281,54 @@
             
             const indiceSeleccionado = diaDelAnio % frases.length;
 
-            document.getElementById('fecha-hoy').innerText = obtenerFechaEspanol();
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            let fechaFormateada = hoy.toLocaleDateString('es-ES', opciones);
+            fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+
+            document.getElementById('fecha-hoy').innerText = fechaFormateada;
             document.getElementById('frase-hoy').innerText = `"${frases[indiceSeleccionado]}"`;
             document.getElementById('icono-flor').innerText = flores[indiceSeleccionado];
         }
 
+        actualizarContenidoJuego(); // Llamada inicial
         actualizarContenidoDiario();
+
+        // Lógica de reproducción de música
+        let cancionActual = 1;
+        const audio = document.getElementById('audio-player');
+        const btnReproducir = document.getElementById('btn-reproducir');
+        const infoCancion = document.getElementById('info-cancion');
+        const sourceAudio = document.getElementById('source-audio');
+
+        function toggleMusica() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    btnReproducir.innerText = "⏸ Pausar Música";
+                }).catch(error => {
+                    console.log("Reproducción bloqueada o archivo no encontrado:", error);
+                    alert("Asegúrate de haber subido los archivos 'cancion1.mp3' y 'cancion2.mp3' a tu repositorio.");
+                });
+            } else {
+                audio.pause();
+                btnReproducir.innerText = "▶ Reproducir Música";
+            }
+        }
+
+        function cambiarCancion() {
+            if (cancionActual === 1) {
+                cancionActual = 2;
+                sourceAudio.src = "cancion2.mp3";
+                infoCancion.innerText = "Reproduciendo: Canción 2 🎵";
+            } else {
+                cancionActual = 1;
+                sourceAudio.src = "cancion1.mp3";
+                infoCancion.innerText = "Reproduciendo: Canción 1 🎵";
+            }
+            audio.load();
+            audio.play().then(() => {
+                btnReproducir.innerText = "⏸ Pausar Música";
+            });
+        }
     </script>
 </body>
 </html>
