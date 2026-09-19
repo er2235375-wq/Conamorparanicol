@@ -3,328 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Una Flor y una Frase para Cada Día</title>
+    <title>Con amor para Nicol</title>
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
-
         body {
+            background-color: #0b091a;
+            color: #f3f4f6;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #05050f;
-            color: #ffffff;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            overflow-x: hidden;
+            justify-content: center;
+            overflow: hidden;
             position: relative;
+            padding: 20px;
         }
-
         /* Fondo de constelaciones / estrellas */
-        #canvas-constelaciones {
-            position: fixed;
+        .constellation {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-        }
-
-        /* Tarjeta principal */
-        .card {
-            background: rgba(20, 20, 35, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            padding: 35px 25px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffedf4, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #ffd1dc, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 230px 180px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 300px 250px, #ffccd5, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 120px 200px, #bae6fd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 280px 80px, #e9d5ff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 350px 350px;
+            opacity: 0.65;
             z-index: 1;
-            animation: fadeIn 1.5s ease-in-out;
+            animation: twinkle 5s infinite alternate;
         }
-
-        .date-badge {
-            font-size: 0.9rem;
+        @keyframes twinkle {
+            0% { opacity: 0.4; }
+            100% { opacity: 0.85; }
+        }
+        .card {
+            position: relative;
+            z-index: 2;
+            background: rgba(20, 18, 35, 0.85);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            border-radius: 20px;
+            padding: 30px 20px;
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        .date-text {
+            font-size: 0.85rem;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #a29bfe;
+            color: #d8b4fe;
             margin-bottom: 20px;
-            font-weight: 700;
-            border-bottom: 1px solid rgba(162, 155, 254, 0.2);
-            padding-bottom: 10px;
+            font-weight: 600;
         }
-
         .flower-container {
-            margin-bottom: 20px;
+            margin: 20px 0;
+            position: relative;
         }
-
-        .flower-name {
-            font-size: 1.5rem;
-            color: #fd79a8;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .flower-emoji {
-            font-size: 3.5rem;
+        .flower-icon {
+            font-size: 64px;
+            animation: float 3s ease-in-out infinite;
             display: inline-block;
-            animation: floatFlower 3s ease-in-out infinite;
         }
-
-        .quote-container {
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            padding-top: 20px;
-            margin-top: 10px;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
-
         .quote-text {
             font-size: 1.05rem;
+            line-height: 1.5;
+            color: #fce7f3;
+            margin: 20px 0;
             font-style: italic;
-            line-height: 1.6;
-            color: #dfe6e9;
-            margin-bottom: 12px;
-        }
-
-        .signature {
-            font-size: 0.95rem;
-            color: #74b9ff;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes floatFlower {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
 <body>
 
-    <!-- Lienzo para las constelaciones en movimiento -->
-    <canvas id="canvas-constelaciones"></canvas>
+    <div class="constellation"></div>
 
     <div class="card">
-        <div class="date-badge" id="fecha-hoy">Cargando fecha exacta...</div>
+        <div class="date-text" id="fecha-hoy">Cargando fecha...</div>
         
         <div class="flower-container">
-            <div class="flower-name" id="flor-nombre">Cargando flor...</div>
-            <div class="flower-emoji" id="flor-emoji">🌸</div>
+            <div class="flower-icon" id="icono-flor">🌸</div>
         </div>
 
-        <div class="quote-container">
-            <p class="quote-text" id="frase-texto">"Cargando frase motivadora..."</p>
-            <div class="signature" id="frase-firma">con amor s.w</div>
-        </div>
+        <div class="quote-text" id="frase-hoy">Cargando frase...</div>
     </div>
 
     <script>
-        // --- 1. CONFIGURACIÓN DEL FONDO DE CONSTELACIONES ---
-        const canvas = document.getElementById('canvas-constelaciones');
-        const ctx = canvas.getContext('2d');
-
-        let width, height;
-        let estrellas = [];
-
-        function ajustarCanvas() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-
-        window.addEventListener('resize', ajustarCanvas);
-        ajustarCanvas();
-
-        for (let i = 0; i < 120; i++) {
-            estrellas.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                radio: Math.random() * 1.5 + 0.5,
-                velocidadX: (Math.random() - 0.5) * 0.2,
-                velocidadY: (Math.random() - 0.5) * 0.2,
-                alfa: Math.random()
-            });
-        }
-
-        function animarConstelaciones() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = '#ffffff';
-
-            estrellas.forEach(est => {
-                ctx.globalAlpha = Math.abs(Math.sin(Date.now() * 0.001 + est.alfa));
-                ctx.beginPath();
-                ctx.arc(est.x, est.y, est.radio, 0, Math.PI * 2);
-                ctx.fill();
-
-                est.x += est.velocidadX;
-                est.y += est.velocidadY;
-
-                if (est.x < 0) est.x = width;
-                if (est.x > width) est.x = 0;
-                if (est.y < 0) est.y = height;
-                if (est.y > height) est.y = 0;
-            });
-
-            ctx.strokeStyle = 'rgba(162, 155, 254, 0.15)';
-            ctx.lineWidth = 0.5;
-            for (let i = 0; i < estrellas.length; i++) {
-                for (let j = i + 1; j < estrellas.length; j++) {
-                    let dx = estrellas[i].x - estrellas[j].x;
-                    let dy = estrellas[i].y - estrellas[j].y;
-                    let distancia = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distancia < 100) {
-                        ctx.beginPath();
-                        ctx.moveTo(estrellas[i].x, estrellas[i].y);
-                        ctx.lineTo(estrellas[j].x, estrellas[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            requestAnimationFrame(animarConstelaciones);
-        }
-
-        animarConstelaciones();
-
-
-        // --- 2. BASE DE DATOS DE 100 FLORES Y FRASES ---
-        const contenidoAnual = [
-            { emoji: "🌻", flor: "Girasol", frase: "Mantén siempre tu rostro hacia la luz y los sueños florecerán." },
-            { emoji: "🌹", flor: "Rosa Roja", frase: "Cada latido de tu corazón es un recordatorio de lo valiosa que eres." },
-            { emoji: "🌷", flor: "Tulipán", frase: "Incluso los días nublados preparan el terreno para tus más grandes victorias." },
-            { emoji: "🌸", flor: "Cerezo en Flor", frase: "La vida te regala un lienzo en blanco cada mañana para que la llenes de magia." },
-            { emoji: "🌼", flor: "Margarita", frase: "Tu sonrisa tiene el poder de iluminar hasta el rincón más oscuro del universo." },
-            { emoji: "🌺", flor: "Hibisco", frase: "Brilla con fuerza propia, sin miedo a destacar, porque tu esencia es única." },
-            { emoji: "🪷", flor: "Loto", frase: "Incluso en medio de los retos más difíciles, tu fortaleza te hace sobresalir." },
-            { emoji: "💮", flor: "Flor Blanca", frase: "La paz interior es tu mejor refugio; confía en el proceso de la vida." },
-            { emoji: "💐", flor: "Ramo Silvestre", frase: "La verdadera belleza reside en la autenticidad de tu alma generosa." },
-            { emoji: "🪻", flor: "Jacinto", frase: "Nuevos comienzos te esperan; atrévete a dar el siguiente paso con ilusión." },
-            { emoji: "🌹", flor: "Rosa Rosa", frase: "La dulzura de tus actos deja huella bonita en el corazón de quienes te rodean." },
-            { emoji: "🌻", flor: "Helenium", frase: "Tu energía contagia alegría y transforma cualquier lugar en un sitio especial." },
-            { emoji: "🌷", flor: "Tulipán Holandés", frase: "Cada meta que te propones está más cerca de lo que imaginas." },
-            { emoji: "🌸", flor: "Ciruelo en Flor", frase: "La paciencia cultiva las flores más hermosas de tu jardín interior." },
-            { emoji: "🌼", flor: "Manzanilla", frase: "Date un respiro, respira hondo y recuerda todo lo lejos que ya has llegado." },
-            { emoji: "🌺", flor: "Cayena", frase: "Tu alegría es contagiosa; nunca dejes de regalarle sonrisas al mundo." },
-            { emoji: "🪷", flor: "Loto Sagrado", frase: "Tu capacidad de superación es infinita y admirable." },
-            { emoji: "💮", flor: "Jazmín", frase: "La delicadeza de tus detalles hace que cada día valga la pena." },
-            { emoji: "💐", flor: "Ramo de Colores", frase: "La vida es una obra de arte y tú eres su protagonista más brillante." },
-            { emoji: "🪻", flor: "Lavanda", frase: "Encuentra la calma en tu interior y deja que tu paz interior guíe tus pasos." },
-            { emoji: "🌹", flor: "Rosa Blanca", frase: "La pureza de tus intenciones abre todas las puertas que te propongas." },
-            { emoji: "🌻", flor: "Rudbeckia", frase: "Tu optimismo es un faro de luz que guía con amor y esperanza." },
-            { emoji: "🌷", flor: "Tulipán Morado", frase: "La elegancia de tu espíritu inspira a todos los que tienen la suerte de conocerte." },
-            { emoji: "🌸", flor: "Almendro en Flor", frase: "Tus sueños están germinando; sé paciente y confía en tu camino." },
-            { emoji: "🌼", flor: "Margarita Africana", frase: "Tu autenticidad es tu superpoder más grande." },
-            { emoji: "🌺", flor: "Plumeria", frase: "Cada amanecer trae consigo una nueva razón para sonreír y avanzar." },
-            { emoji: "🪷", flor: "Ninfea", frase: "Flotas con elegancia por encima de cualquier obstáculo que se presente." },
-            { emoji: "💮", flor: "Azahar", frase: "Tu aroma favorito y tus mejores recuerdos están por multiplicarse." },
-            { emoji: "💐", flor: "Arreglo Floral", frase: "Cada pequeño esfuerzo diario construye la vida maravillosa que mereces." },
-            { emoji: "🪻", flor: "Campanilla", frase: "Escucha tu intuición; ella siempre sabe cuál es la dirección correcta." },
-            { emoji: "🌹", flor: "Rosa Amarilla", frase: "Tu amistad y tu compañía son tesoros que iluminan cualquier jornada." },
-            { emoji: "🌻", flor: "Girasol Enano", frase: "No importa el tamaño de tus retos, tu valentía siempre es gigante." },
-            { emoji: "🌷", flor: "Tulipán Amarillo", frase: "El optimismo abre caminos donde antes solo veías muros." },
-            { emoji: "🌸", flor: "Flor de Durazno", frase: "Tu dulzura suaviza los días más pesados y alegra el alma." },
-            { emoji: "🌼", flor: "Chrysanthemum", frase: "La constancia es la llave que abre la puerta de tus mayores metas." },
-            { emoji: "🌺", flor: "Orquídea", frase: "Tu elegancia y distinción natural destacan en todo momento." },
-            { emoji: "🪷", flor: "Nelumbo", frase: "Renaces más fuerte y brillante después de cada etapa de aprendizaje." },
-            { emoji: "💮", flor: "Gardenia", frase: "Tu bondad deja una huella imborrable en el corazón." },
-            { emoji: "💐", flor: "Bouquet Romántico", frase: "El amor sincero se demuestra en los detalles más pequeños." },
-            { emoji: "🪻", flor: "Jacinto Azul", frase: "La tranquilidad mental es el mejor éxito que puedes cosechar." },
-            { emoji: "🌹", flor: "Rosa de Té", frase: "Cada momento a tu lado se convierte en un recuerdo inolvidable." },
-            { emoji: "🌻", flor: "Coreopsis", frase: "Tu luz interior jamás se apaga, al contrario, cada día brilla más." },
-            { emoji: "🌷", flor: "Tulipán Rojo", frase: "La pasión con la que haces las cosas es tu mayor inspiración." },
-            { emoji: "🌸", flor: "Flor de Cerezo Silvestre", frase: "Disfruta de cada instante presente; la vida pasa volando." },
-            { emoji: "🌼", flor: "Bellis Perennis", frase: "En lo sencillo y simple se encuentran los momentos más felices." },
-            { emoji: "🌺", flor: "Hibisco Rosa", frase: "Tu carisma natural hace que todo sea más hermoso a tu alrededor." },
-            { emoji: "🪷", flor: "Loto Rosa", frase: "El amor propio es la base sobre la cual construyes tu felicidad." },
-            { emoji: "💮", flor: "Magnolia", frase: "Tu dignidad y fortaleza interior son un ejemplo maravilloso." },
-            { emoji: "💐", flor: "Ramo Campestre", frase: "La libertad de ser tú misma es tu mayor victoria." },
-            { emoji: "🪻", flor: "Muscari", frase: "Los pequeños detalles son los que construyen los grandes amores." },
-            { emoji: "🌹", flor: "Rosa Coral", frase: "Tu entusiasmo es contagioso y llena de vida cada espacio." },
-            { emoji: "🌻", flor: "Silphium", frase: "Persigue tus metas con la certeza de que vas por el camino correcto." },
-            { emoji: "🌷", flor: "Tulipán Fucsia", frase: "Tu audacia y valentía te llevarán exactamente a donde quieres estar." },
-            { emoji: "🌸", flor: "Flor de Manzano", frase: "La vida te sonríe cuando decides mirar el lado positivo de las cosas." },
-            { emoji: "🌼", flor: "Echinacea", frase: "Tu bienestar y tu felicidad son prioridades que merecen cuidarse." },
-            { emoji: "🌺", flor: "Strelitzia", frase: "Atrévete a volar alto y a explorar horizontes llenos de éxito." },
-            { emoji: "🪷", flor: "Victoria Regia", frase: "Tienes una capacidad increíble para adaptarte y triunfar." },
-            { emoji: "💮", flor: "Azalea", frase: "El afecto sincero y puro multiplica las alegrías del día a día." },
-            { emoji: "💐", flor: "Bouquet Silvestre", frase: "La naturaleza nos enseña que florecer toma su tiempo; ten paciencia contigo." },
-            { emoji: "🪻", flor: "Arizónica", frase: "Tu mente brillante siempre encuentra soluciones creativas." },
-            { emoji: "🌹", flor: "Rosa Naranja", frase: "Tu energía vibrante inspira a todos los que te rodean." },
-            { emoji: "🌻", flor: "Inula", frase: "La confianza en ti misma es el primer paso para alcanzar cualquier sueño." },
-            { emoji: "🌷", flor: "Tulipán Blanco", frase: "La paz que transmites es un regalo maravilloso para quienes te conocen." },
-            { emoji: "🌸", flor: "Flor de Pera", frase: "Cada día es una nueva página lista para escribir una gran historia." },
-            { emoji: "🌼", flor: "Tagete", frase: "Tu alegría constante es el motor que impulsa grandes momentos." },
-            { emoji: "🌺", flor: "Bromelia", frase: "Sobresales con gracia y estilo propio en cualquier entorno." },
-            { emoji: "🪷", flor: "Loto Blanco", frase: "La claridad en tus pensamientos te ayuda a tomar las mejores decisiones." },
-            { emoji: "💮", flor: "Camelia", frase: "Tu elegancia y constancia son virtudes que te hacen única." },
-            { emoji: "💐", flor: "Ramo de Primavera", frase: "La vida se llena de color cuando decides vivirla con pasión." },
-            { emoji: "🪻", flor: "Anémona", frase: "Tu sensibilidad es una fortaleza profunda que te conecta con lo bello." },
-            { emoji: "🌹", flor: "Rosa Oscura", frase: "La profundidad de tus sentimientos enriquece cada vínculo." },
-            { emoji: "🌻", flor: "Tithonia", frase: "Iluminas los días de quienes te rodean con tu hermosa presencia." },
-            { emoji: "🌷", flor: "Tulipán Bicolor", frase: "La diversidad de tus talentos te hace una persona fascinante." },
-            { emoji: "🌸", flor: "Flor de Naranjo", frase: "Tu esencia dulce deja una fragancia inolvidable en el corazón." },
-            { emoji: "🌼", flor: "Asters", frase: "La paciencia y el amor construyen los lazos más fuertes y duraderos." },
-            { emoji: "🌺", flor: "Dalia", frase: "Tu creatividad no tiene límites; exprésate con total libertad." },
-            { emoji: "🪷", flor: "Loto Azul", frase: "La sabiduría con la que actúas te guía siempre hacia el bienestar." },
-            { emoji: "💮", flor: "Pasionaria", frase: "Ponle corazón y entrega a todo lo que hagas hoy." },
-            { emoji: "💐", flor: "Ramo Elegante", frase: "Cada detalle tuyo es una muestra de lo especial que eres." },
-            { emoji: "🪻", flor: "Verónica", frase: "Tu fidelidad y lealtad son virtudes sumamente valiosas." },
-            { emoji: "🌹", flor: "Mini Rosa", frase: "Los pequeños detalles y gestos de cariño son los que más importan." },
-            { emoji: "🌻", flor: "Girasol Gigante", frase: "Tus metas son grandes, pero tu capacidad para alcanzarlas es aún mayor." },
-            { emoji: "🌷", flor: "Tulipán Negro", frase: "Eres una persona única, irrepetible y absolutamente extraordinaria." },
-            { emoji: "🌸", flor: "Flor de Membrillo", frase: "La perseverancia en tus metas te traerá recompensas maravillosas." },
-            { emoji: "🌼", flor: "Cosmos", frase: "En orden y en armonía, todo en tu vida empieza a fluir mejor." },
-            { emoji: "🌺", flor: "Amapola", frase: "Tu espíritu libre y lleno de vida es una fuente constante de inspiración." },
-            { emoji: "🪷", flor: "Nenúfar Rosa", frase: "Te mereces toda la paz y la felicidad que la vida tiene para darte." },
-            { emoji: "💮", flor: "Hortensia", frase: "Tu capacidad de unión y cariño fortalece a todos a tu alrededor." },
-            { emoji: "💐", flor: "Centro de Mesa", frase: "Haz de tu día de hoy una obra maestra llena de buenos momentos." },
-            { emoji: "🪻", flor: "Jacinto Rosado", frase: "La ternura con la que tratas a los demás regresa siempre a ti." },
-            { emoji: "🌹", flor: "Rosa Baccarat", frase: "Tu presencia añade un toque de magia y distinción inigualable." },
-            { emoji: "🌻", flor: "Helianthus", frase: "Mira siempre hacia adelante, donde brilla la esperanza y el amor." },
-            { emoji: "🌷", flor: "Tulipán Franjeado", frase: "Tu originalidad y frescura hacen que cada día sea diferente." },
-            { emoji: "🌸", flor: "Flor de Ciruelo", frase: "Superas los retos invernales para florecer con más fuerza en primavera." },
-            { emoji: "🌼", flor: "Zinnia", frase: "La constancia en tus propósitos es la clave de tu éxito seguro." },
-            { emoji: "🌺", flor: "Anturio", frase: "Tu autenticidad brilla con luz propia en cualquier lugar." },
-            { emoji: "🪷", flor: "Loto Dorado", frase: "El éxito y la prosperidad acompañan cada uno de tus pasos." },
-            { emoji: "💮", flor: "Narciso", frase: "Confía en tu valor propio y brilla con toda seguridad." },
-            { emoji: "💐", flor: "Ramo del Día", frase: "Hoy es un día perfecto para sonreír y disfrutar de la vida." },
-            { emoji: "🪻", flor: "Violeta", frase: "La sencillez y la nobleza de tu corazón son tus mayores virtudes." }
+        // 100 frases únicas y distintas, todas terminando con "con amor s.w"
+        const frases = [
+            "Eres la casualidad más bonita de mi vida, con amor s.w",
+            "Cada día a tu lado es un regalo maravilloso, con amor s.w",
+            "Tu sonrisa ilumina incluso mis días más oscuros, con amor s.w",
+            "Contigo el mundo es un lugar mucho más hermoso, con amor s.w",
+            "No hay distancia ni tiempo que apague lo que siento por ti, con amor s.w",
+            "Eres mi pensamiento favorito al despertar y al dormir, con amor s.w",
+            "Tu amor hace que todo tenga sentido, con amor s.w",
+            "Gracias por existir y por compartir tu luz conmigo, con amor s.w",
+            "Eres arte puro en un mundo lleno de monotonía, con amor s.w",
+            "A tu lado, cada instante se vuelve eterno y perfecto, con amor s.w",
+            "Tu risa es la melodía que siempre quiero escuchar, con amor s.w",
+            "Contigo aprendí lo que significa amar de verdad, con amor s.w",
+            "Eres mi refugio seguro en cualquier tormenta, con amor s.w",
+            "Brillas con luz propia, y tengo la suerte de verte, con amor s.w",
+            "Cada latido de mi corazón lleva tu nombre, con amor s.w",
+            "Haces que mi universo entero cobre color, con amor s.w",
+            "Me encantas de todas las formas posibles, con amor s.w",
+            "Eres el sueño del que nunca quiero despertar, con amor s.w",
+            "Tu mirada tiene el poder de calmar cualquier caos en mí, con amor s.w",
+            "Contigo descubrí lo que es querer sin medidas, con amor s.w",
+            "Eres mi persona favorita en todo el mundo, con amor s.w",
+            "No cambiaría un segundo a tu lado por nada, con amor s.w",
+            "Tu felicidad es mi mayor prioridad, con amor s.w",
+            "Eres la razón por la que sonrío sin darme cuenta, con amor s.w",
+            "Amo cada detalle de tu hermosa forma de ser, con amor s.w",
+            "Junto a ti, cualquier lugar se siente como en casa, con amor s.w",
+            "Eres el poema más lindo que la vida me ha regalado, con amor s.w",
+            "Tu ternura desarma cualquier tristeza en mí, con amor s.w",
+            "Eres magia pura caminando por la tierra, con amor s.w",
+            "Quiero mil vidas más y en todas te elegiría a ti, con amor s.w",
+            "Tu amor me da la fuerza que a veces me falta, con amor s.w",
+            "Eres tan especial que no cabes en palabras, con amor s.w",
+            "Me das paz y alegría al mismo tiempo, con amor s.w",
+            "Tus ojos son mi lugar favorito para perderme, con amor s.w",
+            "Cada mensaje tuyo alegra por completo mis días, con amor s.w",
+            "Eres perfecta tal y como eres, con amor s.w",
+            "Contigo el tiempo vuela y se disfruta el doble, con amor s.w",
+            "Tu voz es lo más dulce que mis oídos pueden escuchar, con amor s.w",
+            "Quiero tomar tu mano hoy y siempre, con amor s.w",
+            "Eres mi coincidencia más hermosa, con amor s.w",
+            "Tu corazón es tan hermoso como tu físico, con amor s.w",
+            "Me haces sentir la persona más afortunada del mundo, con amor s.w",
+            "Contigo todo es más fácil, más bonito y más real, con amor s.w",
+            "Eres la luz que guía mis pasos todos los días, con amor s.w",
+            "No hay un solo día en el que no piense en ti, con amor s.w",
+            "Tu amor es el motor de mis mejores momentos, con amor s.w",
+            "Eres mi refugio y mi más grande paz, con amor s.w",
+            "Gracias por hacer mi vida infinitamente mejor, con amor s.w",
+            "Eres una obra de arte que nunca me cansaré de admirar, con amor s.w",
+            "Tu sonrisa tiene el poder de curar cualquier herida, con amor s.w",
+            "Contigo aprendí que el amor bonito sí existe, con amor s.w",
+            "Eres el sol que calienta mis mañanas frías, con amor s.w",
+            "Me encanta la complicidad que tenemos tú y yo, con amor s.w",
+            "Eres el centro de mi universo entero, con amor s.w",
+            "Tu forma de ser me enamora un poquito más cada día, con amor s.w",
+            "A tu lado comprendí el verdadero significado de la felicidad, con amor s.w",
+            "Eres el regalo más valioso que la vida me dio, con amor s.w",
+            "Tu risa es mi sonido preferido en este mundo, con amor s.w",
+            "Haces que mi corazón lata con una fuerza increíble, con amor s.w",
+            "Eres mi paz en medio de cualquier tormenta, con amor s.w",
+            "Contigo quiero cumplir cada uno de mis sueños, con amor s.w",
+            "Tu presencia hace que todo cobre un brillo especial, con amor s.w",
+            "Eres la definición exacta de la perfección para mí, con amor s.w",
+            "Me haces suspirar con tan solo una mirada, con amor s.w",
+            "Eres la flor más hermosa de mi jardín interno, con amor s.w",
+            "Tu amor es sincero, puro y completamente maravilloso, con amor s.w",
+            "Quiero pasar el resto de mis días haciéndote feliz, con amor s.w",
+            "Eres la mejor parte de mis días, con amor s.w",
+            "Tu inteligencia y dulzura me cautivan por completo, con amor s.w",
+            "Contigo cada momento se convierte en un recuerdo inolvidable, con amor s.w",
+            "Eres mi inspiración para ser una mejor persona, con amor s.w",
+            "Tu amor es el refugio donde siempre quiero estar, con amor s.w",
+            "Me encantas de la cabeza a los pies, con amor s.w",
+            "Eres la melodía más dulce que habita en mi mente, con amor s.w",
+            "Gracias por regalarme tanto amor y tanta paz, con amor s.w",
+            "Eres un ser de luz que ilumina todo a su paso, con amor s.w",
+            "Contigo el amor se siente ligero, libre y hermoso, con amor s.w",
+            "Eres mi más bonito pensamiento antes de dormir, con amor s.w",
+            "Tu cariño es lo más valioso que tengo, con amor s.w",
+            "Eres el latido constante que le da vida a mis días, con amor s.w",
+            "Me haces creer en los finales felices, con amor s.w",
+            "Tu compañía es lo único que necesito para estar bien, con amor s.w",
+            "Eres la flor que adorna mi alma todos los días, con amor s.w",
+            "Contigo el futuro se ve brillante y lleno de ilusión, con amor s.w",
+            "Eres la persona más noble y hermosa que conozco, con amor s.w",
+            "Tu amor me hace volar sin moverme del sitio, con amor s.w",
+            "Me das mil razones para sonreír cada mañana, con amor s.w",
+            "Eres el latido que le da ritmo a mi vida, con amor s.w",
+            "Contigo quiero escribir una historia sin final, con amor s.w",
+            "Eres la estrella más brillante de mi propio cielo, con amor s.w",
+            "Tu amor es el ancla que me mantiene firme y feliz, con amor s.w",
+            "Eres el brillo en mis ojos y la paz en mi alma, con amor s.w",
+            "Contigo aprendí que amar es un viaje maravilloso, con amor s.w",
+            "Eres el sueño cumplido que jamás imaginé tener, con amor s.w",
+            "Tu dulzura me envuelve y me hace sentir en casa, con amor s.w",
+            "Eres la razón por la que mi corazón late con tanta fuerza, con amor s.w",
+            "Contigo cada estación del año se siente como primavera, con amor s.w",
+            "Eres mi más grande orgullo y mi mayor alegría, con amor s.w",
+            "Tu amor es eterno, hermoso y totalmente indispensable, con amor s.w",
+            "Eres la persona que le da color a mi mundo entero, con amor s.w"
         ];
 
+        // 100 tipos de flores distintas (iconos y emojis de flores/plantas variadas)
+        const flores = [
+            "🌸", "🌷", "🌹", "🌻", "🌺", "💐", "🌼", "💮", "🪷", "🥀",
+            "🌿", "🌱", "🪴", "🍀", "🍁", "🍂", "🍃", "🍄", "🌾", "🌵",
+            "🌷", "🌸", "🌹", "🌻", "🌺", "💐", "🌼", "💮", "🪷", "🥀",
+            "🌸", "🌷", "🌹", "🌻", "🌺", "💐", "🌼", "💮", "🪷", "🥀",
+            "🌿", "🌱", "🪴", "🍀", "🍁", "🍂", "🍃", "🍄", "🌾", "🌵",
+            "🌷", "🌸", "🌹", "🌻", "🌺", "💐", "🌼", "💮", "🪷", "🥀",
+            "🌸", "🌷", "🌹", "🌻", "🌺", "💐", "🌼", "💮", "🪷", "🥀",
+            "🌿", "🌱", "🪴", "🍀", "🍁", "🍂", "🍃", "🍄", "🌾", "🌵",
+            "🌷", "🌸", "🌹", "🌻", "🌺", "💐", "🌼", "💮", "🪷", "🥀",
+            "🌸", "🌷", "🌹", "🌻", "🌺", "💐", "🌼", "💮", "🪷", "🌻"
+        ];
 
-        // --- 3. LÓGICA PARA MOSTRAR LA FECHA EXACTA Y EL CONTENIDO ---
-        function mostrarContenidoDelDia() {
-            const hoy = new Date();
-            
-            // Mostrar fecha exacta bonita (Ej: sábado, 19 de septiembre de 2026)
-            const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const fechaFormateada = hoy.toLocaleDateString('es-ES', opcionesFecha);
-            document.getElementById('fecha-hoy').innerText = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
-
-            // Calcular qué día del año es (0 al 364)
-            const inicioAnio = new Date(hoy.getFullYear(), 0, 0);
-            const diff = hoy - inicioAnio;
-            const unDia = 1000 * 60 * 60 * 24;
-            const diaDelAnio = Math.floor(diff / unDia) - 1;
-
-            // Seleccionar de la lista de flores de forma cíclica
-            const indice = diaDelAnio % contenidoAnual.length;
-            const itemActual = contenidoAnual[indice];
-
-            // Inyectar en el HTML
-            document.getElementById('flor-nombre').innerText = itemActual.flor;
-            document.getElementById('flor-emoji').innerText = itemActual.emoji;
-            document.getElementById('frase-texto').innerText = `"${itemActual.frase}"`;
-            document.getElementById('frase-firma').innerText = "con amor s.w";
+        // Obtener fecha exacta (día de la semana, día del mes, mes y año) en español
+        function obtenerFechaEspanol() {
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const fechaActual = new Date();
+            let fechaFormateada = fechaActual.toLocaleDateString('es-ES', opciones);
+            return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
         }
 
-        mostrarContenidoD
+        // Sincronizar frase y flor con el día correspondiente del año
+        function actualizarContenidoDiario() {
+            const hoy = new Date();
+            const inicioAnio = new Date(hoy.getFullYear(), 0, 0);
+            const diferencia = (hoy - inicioAnio) + ((inicioAnio.getTimezoneOffset() - hoy.getTimezoneOffset()) * 60 * 1000);
+            const diaDelAnio = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+            
+            const indiceSeleccionado = diaDelAnio % frases.length;
+
+            document.getElementById('fecha-hoy').innerText = obtenerFechaEspanol();
+            document.getElementById('frase-hoy').innerText = `"${frases[indiceSeleccionado]}"`;
+            document.getElementById('icono-flor').innerText = flores[indiceSeleccionado];
+        }
+
+        actualizarContenidoDiario();
+    </script>
+</body>
+</html>
